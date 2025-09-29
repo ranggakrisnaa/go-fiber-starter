@@ -1,8 +1,11 @@
 package query
 
 import (
+
 	"github.com/Caknoooo/go-pagination"
+	"github.com/gofiber/fiber/v3"
 	"gorm.io/gorm"
+	"strconv"
 )
 
 type User struct {
@@ -57,4 +60,25 @@ func (f *UserFilter) Validate() {
 
 func (f *UserFilter) GetAllowedIncludes() map[string]bool {
 	return map[string]bool{}
+}
+
+// BindPaginationForFiber binds pagination parameters from Fiber context
+func (f *UserFilter) BindPaginationForFiber(ctx fiber.Ctx) error {
+	// Set default values
+	if f.Pagination.Page == 0 {
+		f.Pagination.Page = 1
+	}
+	if f.Pagination.PerPage == 0 {
+		f.Pagination.PerPage = 10
+	}
+
+	// Get query parameters using Fiber v3 API
+	page, _ := strconv.Atoi(ctx.Query("page", "1"))
+	perPage, _ := strconv.Atoi(ctx.Query("per_page", "10"))
+
+	// Bind values to filter - only update pagination fields
+	f.Pagination.Page = page
+	f.Pagination.PerPage = perPage
+
+	return nil
 }

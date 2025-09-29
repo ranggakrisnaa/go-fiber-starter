@@ -3,14 +3,14 @@ package service
 import (
 	"context"
 
-	"github.com/Caknoooo/go-gin-clean-starter/database/entities"
-	"github.com/Caknoooo/go-gin-clean-starter/modules/auth/dto"
-	authRepo "github.com/Caknoooo/go-gin-clean-starter/modules/auth/repository"
-	userDto "github.com/Caknoooo/go-gin-clean-starter/modules/user/dto"
-	"github.com/Caknoooo/go-gin-clean-starter/modules/user/repository"
-	"github.com/Caknoooo/go-gin-clean-starter/pkg/helpers"
-	"github.com/Caknoooo/go-gin-clean-starter/pkg/utils"
 	"github.com/google/uuid"
+	"github.com/ranggakrisnaa/go-fiber-starter/database/entities"
+	"github.com/ranggakrisnaa/go-fiber-starter/modules/auth/dto"
+	authRepo "github.com/ranggakrisnaa/go-fiber-starter/modules/auth/repository"
+	userDto "github.com/ranggakrisnaa/go-fiber-starter/modules/user/dto"
+	"github.com/ranggakrisnaa/go-fiber-starter/modules/user/repository"
+	"github.com/ranggakrisnaa/go-fiber-starter/pkg/helpers"
+	"github.com/ranggakrisnaa/go-fiber-starter/pkg/utils"
 	"gorm.io/gorm"
 )
 

@@ -1,23 +1,23 @@
 package auth
 
 import (
-	"github.com/Caknoooo/go-gin-clean-starter/modules/auth/controller"
-	"github.com/gin-gonic/gin"
+	"github.com/gofiber/fiber/v3"
+	"github.com/ranggakrisnaa/go-fiber-starter/modules/auth/controller"
 	"github.com/samber/do"
 )
 
-func RegisterRoutes(server *gin.Engine, injector *do.Injector) {
+func RegisterRoutes(app *fiber.App, injector *do.Injector) {
 	authController := do.MustInvoke[controller.AuthController](injector)
 
-	authRoutes := server.Group("/api/auth")
+	authRoutes := app.Group("/api/auth")
 	{
-		authRoutes.POST("/register", authController.Register)
-		authRoutes.POST("/login", authController.Login)
-		authRoutes.POST("/refresh", authController.RefreshToken)
-		authRoutes.POST("/logout", authController.Logout)
-		authRoutes.POST("/send-verification-email", authController.SendVerificationEmail)
-		authRoutes.POST("/verify-email", authController.VerifyEmail)
-		authRoutes.POST("/send-password-reset", authController.SendPasswordReset)
-		authRoutes.POST("/reset-password", authController.ResetPassword)
+		authRoutes.Post("/register", authController.Register)
+		authRoutes.Post("/login", authController.Login)
+		authRoutes.Post("/refresh", authController.RefreshToken)
+		authRoutes.Post("/logout", authController.Logout)
+		authRoutes.Post("/send-verification-email", authController.SendVerificationEmail)
+		authRoutes.Post("/verify-email", authController.VerifyEmail)
+		authRoutes.Post("/send-password-reset", authController.SendPasswordReset)
+		authRoutes.Post("/reset-password", authController.ResetPassword)
 	}
 }

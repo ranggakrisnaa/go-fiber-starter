@@ -4,8 +4,8 @@ import (
 	"errors"
 	"mime/multipart"
 
-	"github.com/Caknoooo/go-gin-clean-starter/database/entities"
-	"github.com/Caknoooo/go-gin-clean-starter/pkg/dto"
+	"github.com/ranggakrisnaa/go-fiber-starter/database/entities"
+	"github.com/ranggakrisnaa/go-fiber-starter/pkg/dto"
 )
 
 const (

@@ -1,9 +1,9 @@
 package validation
 
 import (
-	"github.com/Caknoooo/go-gin-clean-starter/modules/auth/dto"
-	userDto "github.com/Caknoooo/go-gin-clean-starter/modules/user/dto"
 	"github.com/go-playground/validator/v10"
+	"github.com/ranggakrisnaa/go-fiber-starter/modules/auth/dto"
+	userDto "github.com/ranggakrisnaa/go-fiber-starter/modules/user/dto"
 )
 
 type AuthValidation struct {

@@ -1,29 +1,27 @@
 package controller
 
 import (
-	"net/http"
-
-	"github.com/Caknoooo/go-gin-clean-starter/modules/auth/dto"
-	"github.com/Caknoooo/go-gin-clean-starter/modules/auth/service"
-	"github.com/Caknoooo/go-gin-clean-starter/modules/auth/validation"
-	userDto "github.com/Caknoooo/go-gin-clean-starter/modules/user/dto"
-	"github.com/Caknoooo/go-gin-clean-starter/pkg/constants"
-	"github.com/Caknoooo/go-gin-clean-starter/pkg/utils"
-	"github.com/gin-gonic/gin"
+	"github.com/ranggakrisnaa/go-fiber-starter/modules/auth/dto"
+	"github.com/ranggakrisnaa/go-fiber-starter/modules/auth/service"
+	"github.com/ranggakrisnaa/go-fiber-starter/modules/auth/validation"
+	userDto "github.com/ranggakrisnaa/go-fiber-starter/modules/user/dto"
+	"github.com/ranggakrisnaa/go-fiber-starter/pkg/constants"
+	"github.com/ranggakrisnaa/go-fiber-starter/pkg/utils"
+	"github.com/gofiber/fiber/v3"
 	"github.com/samber/do"
 	"gorm.io/gorm"
 )
 
 type (
 	AuthController interface {
-		Register(ctx *gin.Context)
-		Login(ctx *gin.Context)
-		RefreshToken(ctx *gin.Context)
-		Logout(ctx *gin.Context)
-		SendVerificationEmail(ctx *gin.Context)
-		VerifyEmail(ctx *gin.Context)
-		SendPasswordReset(ctx *gin.Context)
-		ResetPassword(ctx *gin.Context)
+		Register(ctx fiber.Ctx) error
+		Login(ctx fiber.Ctx) error
+		RefreshToken(ctx fiber.Ctx) error
+		Logout(ctx fiber.Ctx) error
+		SendVerificationEmail(ctx fiber.Ctx) error
+		VerifyEmail(ctx fiber.Ctx) error
+		SendPasswordReset(ctx fiber.Ctx) error
+		ResetPassword(ctx fiber.Ctx) error
 	}
 
 	authController struct {
@@ -43,163 +41,146 @@ func NewAuthController(injector *do.Injector, as service.AuthService) AuthContro
 	}
 }
 
-func (c *authController) Register(ctx *gin.Context) {
+func (c *authController) Register(ctx fiber.Ctx) error {
 	var req userDto.UserCreateRequest
-	if err := ctx.ShouldBind(&req); err != nil {
+	if err := ctx.Bind().Body(&req); err != nil {
 		res := utils.BuildResponseFailed(userDto.MESSAGE_FAILED_GET_DATA_FROM_BODY, err.Error(), nil)
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, res)
-		return
+		return ctx.Status(fiber.StatusBadRequest).JSON(res)
 	}
 
 	// Validate request
 	if err := c.authValidation.ValidateRegisterRequest(req); err != nil {
 		res := utils.BuildResponseFailed("Validation failed", err.Error(), nil)
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, res)
-		return
+		return ctx.Status(fiber.StatusBadRequest).JSON(res)
 	}
 
-	result, err := c.authService.Register(ctx.Request.Context(), req)
+	result, err := c.authService.Register(ctx.Context(), req)
 	if err != nil {
 		res := utils.BuildResponseFailed(userDto.MESSAGE_FAILED_REGISTER_USER, err.Error(), nil)
-		ctx.JSON(http.StatusBadRequest, res)
-		return
+		return ctx.Status(fiber.StatusBadRequest).JSON(res)
 	}
 
 	res := utils.BuildResponseSuccess(userDto.MESSAGE_SUCCESS_REGISTER_USER, result)
-	ctx.JSON(http.StatusOK, res)
+	return ctx.Status(fiber.StatusOK).JSON(res)
 }
 
-func (c *authController) Login(ctx *gin.Context) {
+func (c *authController) Login(ctx fiber.Ctx) error {
 	var req userDto.UserLoginRequest
-	if err := ctx.ShouldBind(&req); err != nil {
+	if err := ctx.Bind().Body(&req); err != nil {
 		response := utils.BuildResponseFailed(userDto.MESSAGE_FAILED_GET_DATA_FROM_BODY, err.Error(), nil)
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, response)
-		return
+		return ctx.Status(fiber.StatusBadRequest).JSON(response)
 	}
 
 	// Validate request
 	if err := c.authValidation.ValidateLoginRequest(req); err != nil {
 		res := utils.BuildResponseFailed("Validation failed", err.Error(), nil)
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, res)
-		return
+		return ctx.Status(fiber.StatusBadRequest).JSON(res)
 	}
 
-	result, err := c.authService.Login(ctx.Request.Context(), req)
+	result, err := c.authService.Login(ctx.Context(), req)
 	if err != nil {
 		res := utils.BuildResponseFailed(userDto.MESSAGE_FAILED_LOGIN, err.Error(), nil)
-		ctx.JSON(http.StatusBadRequest, res)
-		return
+		return ctx.Status(fiber.StatusBadRequest).JSON(res)
 	}
 
 	res := utils.BuildResponseSuccess(userDto.MESSAGE_SUCCESS_LOGIN, result)
-	ctx.JSON(http.StatusOK, res)
+	return ctx.Status(fiber.StatusOK).JSON(res)
 }
 
-func (c *authController) RefreshToken(ctx *gin.Context) {
+func (c *authController) RefreshToken(ctx fiber.Ctx) error {
 	var req dto.RefreshTokenRequest
-	if err := ctx.ShouldBind(&req); err != nil {
+	if err := ctx.Bind().Body(&req); err != nil {
 		res := utils.BuildResponseFailed(userDto.MESSAGE_FAILED_GET_DATA_FROM_BODY, err.Error(), nil)
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, res)
-		return
+		return ctx.Status(fiber.StatusBadRequest).JSON(res)
 	}
 
-	result, err := c.authService.RefreshToken(ctx.Request.Context(), req)
+	result, err := c.authService.RefreshToken(ctx.Context(), req)
 	if err != nil {
 		res := utils.BuildResponseFailed(dto.MESSAGE_FAILED_REFRESH_TOKEN, err.Error(), nil)
-		ctx.JSON(http.StatusUnauthorized, res)
-		return
+		return ctx.Status(fiber.StatusUnauthorized).JSON(res)
 	}
 
 	res := utils.BuildResponseSuccess(dto.MESSAGE_SUCCESS_REFRESH_TOKEN, result)
-	ctx.JSON(http.StatusOK, res)
+	return ctx.Status(fiber.StatusOK).JSON(res)
 }
 
-func (c *authController) Logout(ctx *gin.Context) {
-	userId := ctx.MustGet("user_id").(string)
+func (c *authController) Logout(ctx fiber.Ctx) error {
+	userId := ctx.Locals("user_id").(string)
 
-	err := c.authService.Logout(ctx.Request.Context(), userId)
+	err := c.authService.Logout(ctx.Context(), userId)
 	if err != nil {
 		res := utils.BuildResponseFailed(dto.MESSAGE_FAILED_LOGOUT, err.Error(), nil)
-		ctx.JSON(http.StatusBadRequest, res)
-		return
+		return ctx.Status(fiber.StatusBadRequest).JSON(res)
 	}
 
 	res := utils.BuildResponseSuccess(dto.MESSAGE_SUCCESS_LOGOUT, nil)
-	ctx.JSON(http.StatusOK, res)
+	return ctx.Status(fiber.StatusOK).JSON(res)
 }
 
-func (c *authController) SendVerificationEmail(ctx *gin.Context) {
+func (c *authController) SendVerificationEmail(ctx fiber.Ctx) error {
 	var req userDto.SendVerificationEmailRequest
-	if err := ctx.ShouldBind(&req); err != nil {
+	if err := ctx.Bind().Body(&req); err != nil {
 		res := utils.BuildResponseFailed(userDto.MESSAGE_FAILED_GET_DATA_FROM_BODY, err.Error(), nil)
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, res)
-		return
+		return ctx.Status(fiber.StatusBadRequest).JSON(res)
 	}
 
-	err := c.authService.SendVerificationEmail(ctx.Request.Context(), req)
+	err := c.authService.SendVerificationEmail(ctx.Context(), req)
 	if err != nil {
 		res := utils.BuildResponseFailed(userDto.MESSAGE_FAILED_PROSES_REQUEST, err.Error(), nil)
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, res)
-		return
+		return ctx.Status(fiber.StatusBadRequest).JSON(res)
 	}
 
 	res := utils.BuildResponseSuccess(userDto.MESSAGE_SEND_VERIFICATION_EMAIL_SUCCESS, nil)
-	ctx.JSON(http.StatusOK, res)
+	return ctx.Status(fiber.StatusOK).JSON(res)
 }
 
-func (c *authController) VerifyEmail(ctx *gin.Context) {
+func (c *authController) VerifyEmail(ctx fiber.Ctx) error {
 	var req userDto.VerifyEmailRequest
-	if err := ctx.ShouldBind(&req); err != nil {
+	if err := ctx.Bind().Body(&req); err != nil {
 		res := utils.BuildResponseFailed(userDto.MESSAGE_FAILED_GET_DATA_FROM_BODY, err.Error(), nil)
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, res)
-		return
+		return ctx.Status(fiber.StatusBadRequest).JSON(res)
 	}
 
-	result, err := c.authService.VerifyEmail(ctx.Request.Context(), req)
+	result, err := c.authService.VerifyEmail(ctx.Context(), req)
 	if err != nil {
 		res := utils.BuildResponseFailed(userDto.MESSAGE_FAILED_VERIFY_EMAIL, err.Error(), nil)
-		ctx.JSON(http.StatusBadRequest, res)
-		return
+		return ctx.Status(fiber.StatusBadRequest).JSON(res)
 	}
 
 	res := utils.BuildResponseSuccess(userDto.MESSAGE_SUCCESS_VERIFY_EMAIL, result)
-	ctx.JSON(http.StatusOK, res)
+	return ctx.Status(fiber.StatusOK).JSON(res)
 }
 
-func (c *authController) SendPasswordReset(ctx *gin.Context) {
+func (c *authController) SendPasswordReset(ctx fiber.Ctx) error {
 	var req dto.SendPasswordResetRequest
-	if err := ctx.ShouldBind(&req); err != nil {
+	if err := ctx.Bind().Body(&req); err != nil {
 		res := utils.BuildResponseFailed(userDto.MESSAGE_FAILED_GET_DATA_FROM_BODY, err.Error(), nil)
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, res)
-		return
+		return ctx.Status(fiber.StatusBadRequest).JSON(res)
 	}
 
-	err := c.authService.SendPasswordReset(ctx.Request.Context(), req)
+	err := c.authService.SendPasswordReset(ctx.Context(), req)
 	if err != nil {
 		res := utils.BuildResponseFailed(dto.MESSAGE_FAILED_SEND_PASSWORD_RESET, err.Error(), nil)
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, res)
-		return
+		return ctx.Status(fiber.StatusBadRequest).JSON(res)
 	}
 
 	res := utils.BuildResponseSuccess(dto.MESSAGE_SUCCESS_SEND_PASSWORD_RESET, nil)
-	ctx.JSON(http.StatusOK, res)
+	return ctx.Status(fiber.StatusOK).JSON(res)
 }
 
-func (c *authController) ResetPassword(ctx *gin.Context) {
+func (c *authController) ResetPassword(ctx fiber.Ctx) error {
 	var req dto.ResetPasswordRequest
-	if err := ctx.ShouldBind(&req); err != nil {
+	if err := ctx.Bind().Body(&req); err != nil {
 		res := utils.BuildResponseFailed(userDto.MESSAGE_FAILED_GET_DATA_FROM_BODY, err.Error(), nil)
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, res)
-		return
+		return ctx.Status(fiber.StatusBadRequest).JSON(res)
 	}
 
-	err := c.authService.ResetPassword(ctx.Request.Context(), req)
+	err := c.authService.ResetPassword(ctx.Context(), req)
 	if err != nil {
 		res := utils.BuildResponseFailed(dto.MESSAGE_FAILED_RESET_PASSWORD, err.Error(), nil)
-		ctx.JSON(http.StatusBadRequest, res)
-		return
+		return ctx.Status(fiber.StatusBadRequest).JSON(res)
 	}
 
 	res := utils.BuildResponseSuccess(dto.MESSAGE_SUCCESS_RESET_PASSWORD, nil)
-	ctx.JSON(http.StatusOK, res)
+	return ctx.Status(fiber.StatusOK).JSON(res)
 }

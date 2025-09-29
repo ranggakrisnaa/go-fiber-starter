@@ -6,7 +6,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/Caknoooo/go-gin-clean-starter/database/entities"
+	"github.com/ranggakrisnaa/go-fiber-starter/database/entities"
 	"gorm.io/gorm"
 )
 

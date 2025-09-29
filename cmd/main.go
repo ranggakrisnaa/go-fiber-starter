@@ -1,18 +1,23 @@
 package main
 
 import (
+	"context"
 	"log"
 	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
-	"github.com/Caknoooo/go-gin-clean-starter/middlewares"
-	"github.com/Caknoooo/go-gin-clean-starter/modules/auth"
-	"github.com/Caknoooo/go-gin-clean-starter/modules/user"
-	"github.com/Caknoooo/go-gin-clean-starter/providers"
-	"github.com/Caknoooo/go-gin-clean-starter/script"
+	"github.com/ranggakrisnaa/go-fiber-starter/middlewares"
+	"github.com/ranggakrisnaa/go-fiber-starter/modules/auth"
+	"github.com/ranggakrisnaa/go-fiber-starter/modules/user"
+	"github.com/ranggakrisnaa/go-fiber-starter/providers"
+	"github.com/ranggakrisnaa/go-fiber-starter/script"
 	"github.com/samber/do"
 
 	"github.com/common-nighthawk/go-figure"
-	"github.com/gin-gonic/gin"
+	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/middleware/static"
 )
 
 func args(injector *do.Injector) bool {
@@ -24,8 +29,8 @@ func args(injector *do.Injector) bool {
 	return true
 }
 
-func run(server *gin.Engine) {
-	server.Static("/assets", "./assets")
+func run(app *fiber.App, injector *do.Injector) {
+	app.Use("/assets", static.New("./assets"))
 
 	port := os.Getenv("GOLANG_PORT")
 	if port == "" {
@@ -39,12 +44,33 @@ func run(server *gin.Engine) {
 		serve = ":" + port
 	}
 
-	myFigure := figure.NewColorFigure("Caknoo", "", "green", true)
+	myFigure := figure.NewColorFigure("Rangga", "", "green", true)
 	myFigure.Print()
 
-	if err := server.Run(serve); err != nil {
-		log.Fatalf("error running server: %v", err)
+	go func() {
+		if err := app.Listen(serve); err != nil {
+			log.Fatalf("error running server: %v", err)
+		}
+	}()
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+
+	log.Println("Shutting down server...")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	if err := app.ShutdownWithContext(ctx); err != nil {
+		log.Printf("Server forced to shutdown: %v", err)
 	}
+
+	if err := do.Shutdown[do.Injector](injector); err != nil {
+		log.Printf("Error shutting down dependencies: %v", err)
+	}
+
+	log.Println("Server exited properly")
 }
 
 func main() {
@@ -58,12 +84,13 @@ func main() {
 		return
 	}
 
-	server := gin.Default()
-	server.Use(middlewares.CORSMiddleware())
+	app := fiber.New()
+	app.Use(middlewares.CORSMiddleware())
+	app.Use(middlewares.RateLimiter(injector, 100, time.Second*60))
 
 	// Register module routes
-	user.RegisterRoutes(server, injector)
-	auth.RegisterRoutes(server, injector)
+	user.RegisterRoutes(app, injector)
+	auth.RegisterRoutes(app, injector)
 
-	run(server)
+	run(app, injector)
 }

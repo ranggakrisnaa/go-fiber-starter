@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"github.com/Caknoooo/go-gin-clean-starter/config"
+	"github.com/ranggakrisnaa/go-fiber-starter/config"
 
 	"gopkg.in/gomail.v2"
 )

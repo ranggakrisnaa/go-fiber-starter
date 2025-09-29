@@ -3,8 +3,8 @@ package tests
 import (
 	"testing"
 
-	"github.com/Caknoooo/go-gin-clean-starter/modules/user/dto"
-	"github.com/Caknoooo/go-gin-clean-starter/modules/user/validation"
+	"github.com/ranggakrisnaa/go-fiber-starter/modules/user/dto"
+	"github.com/ranggakrisnaa/go-fiber-starter/modules/user/validation"
 	"github.com/stretchr/testify/assert"
 )
 

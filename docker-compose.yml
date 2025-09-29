@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: ./docker/Dockerfile
-    container_name: ${APP_NAME:-go-gin-clean-starter}-app
+    container_name: ${APP_NAME:-go-fiber-clean}-app
     volumes:
       - .:/app
     ports:
@@ -13,7 +13,7 @@ services:
 
   nginx:
     image: nginx:latest
-    container_name: ${APP_NAME:-go-gin-clean-starter}-nginx
+    container_name: ${APP_NAME:-go-fiber-clean}-nginx
     ports:
       - ${NGINX_PORT:-81}:80
     volumes:
@@ -26,7 +26,7 @@ services:
 
   postgres:
     hostname: postgres
-    container_name: ${APP_NAME:-go-gin-clean-starter}-db
+    container_name: ${APP_NAME:-go-fiber-clean}-db
     image: postgres:latest
     ports:
       - ${DB_PORT}:5432

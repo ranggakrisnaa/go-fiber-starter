@@ -2,7 +2,7 @@
 
 You can join in the development (Open Source). **Let's Go!!!**
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/Caknoooo/go-gin-clean-starter)](https://goreportcard.com/report/github.com/Caknoooo/go-gin-clean-starter) [![Go Reference](https://pkg.go.dev/badge/github.com/Caknoooo/go-gin-clean-starter.svg)](https://pkg.go.dev/github.com/Caknoooo/go-gin-clean-starter) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Release](https://img.shields.io/badge/release-v2.1.0-green.svg)](https://github.com/Caknoooo/go-gin-clean-starter/releases) <img align="right" width="200" height="200" alt="Go Gin Clean Architecture" src="https://github.com/user-attachments/assets/b7e2f353-bb6b-4ef1-88e9-6ab9bf2b8327" />
+[![Go Report Card](https://goreportcard.com/badge/github.com/ranggakrisnaa/go-fiber-starter)](https://goreportcard.com/report/github.com/ranggakrisnaa/go-fiber-starter) [![Go Reference](https://pkg.go.dev/badge/github.com/ranggakrisnaa/go-fiber-starter.svg)](https://pkg.go.dev/github.com/ranggakrisnaa/go-fiber-starter) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Release](https://img.shields.io/badge/release-v2.1.0-green.svg)](https://github.com/ranggakrisnaa/go-fiber-starter/releases) <img align="right" width="200" height="200" alt="Go Gin Clean Architecture" src="https://github.com/user-attachments/assets/b7e2f353-bb6b-4ef1-88e9-6ab9bf2b8327" />
 
 [![Go Version](https://img.shields.io/badge/Go-%3E%3D%201.20-blue.svg)](https://golang.org/) [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-%3E%3D%2015.0-blue.svg)](https://www.postgresql.org/) [![Docker](https://img.shields.io/badge/Docker-Supported-blue.svg)](https://www.docker.com/) [![Gin](https://img.shields.io/badge/Gin-Web%20Framework-red.svg)](https://gin-gonic.com/) [![GORM](https://img.shields.io/badge/GORM-ORM-green.svg)](https://gorm.io/)
 
@@ -40,14 +40,14 @@ http://your-domain/logs
 ### Installation
 1. Clone the repository or **Use This Template**
    ```bash
-   git clone https://github.com/Caknoooo/go-gin-clean-starter.git
+   git clone https://github.com/ranggakrisnaa/go-fiber-starter.git
    ```
 2. Navigate to the project directory:
    ```bash
-   cd go-gin-clean-starter
+   cd go-fiber-clean
    ```
 3. Copy the example environment file and configure it:
-   ```bash 
+   ```bash
    cp .env.example .env
    ```
 4. Install dependencies:
@@ -78,7 +78,7 @@ make module name=product
 
 This command will automatically create a complete module structure including:
 - Controller (`product_controller.go`)
-- Service (`product_service.go`) 
+- Service (`product_service.go`)
 - Repository (`product_repository.go`)
 - DTO (`product_dto.go`)
 - Validation (`product_validation.go`)
@@ -99,7 +99,7 @@ make test-coverage  # Run tests with coverage report
 ### Local Database Commands (without Docker)
 ```bash
 make migrate-local      # Run migrations locally
-make seed-local        # Run seeders locally  
+make seed-local        # Run seeders locally
 make migrate-seed-local # Run migrations + seeders locally
 ```
 

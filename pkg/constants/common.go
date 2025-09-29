@@ -12,4 +12,8 @@ const (
 
 	DB         = "db"
 	JWTService = "JWTService"
+
+	KafkaProducer = "kafka-producer"
+	KafkaConsumer = "kafka-consumer"
+	RedisClient   = "redis-client"
 )
