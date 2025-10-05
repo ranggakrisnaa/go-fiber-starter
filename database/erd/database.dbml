@@ -1,0 +1,27 @@
+Table "users" {
+  "id" uuid [pk, not null, default: `uuid_generate_v4()`]
+  "name" varchar(100) [not null]
+  "email" varchar(255) [unique, not null]
+  "telp_number" varchar(20)
+  "password" varchar(255) [not null]
+  "role" varchar(50) [not null, default: 'user']
+  "image_url" varchar(255)
+  "is_verified" bool [default: false]
+  "created_at" timestamptz
+  "updated_at" timestamptz
+
+  Indexes {
+    telp_number [type: btree, name: "idx_users_telp_number"]
+  }
+}
+
+Table "refresh_tokens" {
+  "id" uuid [pk, not null, default: `uuid_generate_v4()`]
+  "user_id" uuid [not null]
+  "token" varchar(255) [unique, not null]
+  "expires_at" timestamptz [not null]
+  "created_at" timestamptz
+  "updated_at" timestamptz
+}
+
+Ref "fk_refresh_tokens_user":"users"."id" < "refresh_tokens"."user_id" [update: cascade, delete: cascade]

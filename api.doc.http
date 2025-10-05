@@ -1,0 +1,9 @@
+### POST request login user
+POST http://localhost:8888/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin1234@gmail.com",
+  "password": "admin1234"
+}
+
