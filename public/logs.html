@@ -93,9 +93,9 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(45deg, 
-                rgba(79, 70, 229, 0.1) 0%,
-                rgba(79, 70, 229, 0) 100%);
+            background: linear-gradient(45deg,
+            rgba(79, 70, 229, 0.1) 0%,
+            rgba(79, 70, 229, 0) 100%);
             opacity: 0;
             transition: opacity 0.3s ease;
         }
@@ -131,70 +131,70 @@
 </head>
 
 <body class="font-sans">
-    <div class="max-w-5xl mx-auto p-8 glass-effect rounded-3xl shadow-2xl mt-12 mb-12">
-        <div class="flex items-center justify-between mb-12">
-            <div>
-                <h1 class="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Query Logs</h1>
-                <p class="text-gray-500 mt-2">Monitor and track system queries</p>
-            </div>
-
-            <div class="controls-wrapper">
-                <button onclick="location.reload()" class="refresh-button" title="Refresh logs">
-                    <i class="fa-solid fa-arrows-rotate"></i>
-                </button>
-
-                <div class="relative">
-                    <select id="month" onchange="changeMonth()" class="custom-select w-48 px-6 py-3 rounded-xl text-sm font-medium">
-                        <option value="january" {{ if eq .Month "january" }}selected{{ end }}>January</option>
-                        <option value="february" {{ if eq .Month "february" }}selected{{ end }}>February</option>
-                        <option value="march" {{ if eq .Month "march" }}selected{{ end }}>March</option>
-                        <option value="april" {{ if eq .Month "april" }}selected{{ end }}>April</option>
-                        <option value="may" {{ if eq .Month "may" }}selected{{ end }}>May</option>
-                        <option value="june" {{ if eq .Month "june" }}selected{{ end }}>June</option>
-                        <option value="july" {{ if eq .Month "july" }}selected{{ end }}>July</option>
-                        <option value="august" {{ if eq .Month "august" }}selected{{ end }}>August</option>
-                        <option value="september" {{ if eq .Month "september" }}selected{{ end }}>September</option>
-                        <option value="october" {{ if eq .Month "october" }}selected{{ end }}>October</option>
-                        <option value="november" {{ if eq .Month "november" }}selected{{ end }}>November</option>
-                        <option value="december" {{ if eq .Month "december" }}selected{{ end }}>December</option>
-                    </select>
-                </div>
-            </div>
+<div class="max-w-5xl mx-auto p-8 glass-effect rounded-3xl shadow-2xl mt-12 mb-12">
+    <div class="flex items-center justify-between mb-12">
+        <div>
+            <h1 class="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Query Logs</h1>
+            <p class="text-gray-500 mt-2">Monitor and track system queries</p>
         </div>
 
-        <ul class="space-y-6">
-            {{ range .Logs }}
-            <li class="log-item p-6 glass-effect rounded-2xl hover:bg-gradient-to-r hover:from-indigo-50 hover:to-purple-50 transition-all">
-                <div class="flex items-center gap-2 text-indigo-600 mb-3">
-                    <i class="fa-solid fa-terminal text-sm"></i>
-                    <span class="font-semibold">Log Entry</span>
-                </div>
-                <pre class="text-sm whitespace-pre-wrap break-words log-text">{{ . }}</pre>
-            </li>
-            {{ else }}
-            <li class="p-8 glass-effect rounded-2xl text-center">
-                <i class="fa-solid fa-inbox text-4xl text-gray-300 mb-3"></i>
-                <p class="text-gray-500">No logs found for this month.</p>
-            </li>
-            {{ end }}
-        </ul>      
+        <div class="controls-wrapper">
+            <button onclick="location.reload()" class="refresh-button" title="Refresh logs">
+                <i class="fa-solid fa-arrows-rotate"></i>
+            </button>
+
+            <div class="relative">
+                <select id="month" onchange="changeMonth()" class="custom-select w-48 px-6 py-3 rounded-xl text-sm font-medium">
+                    <option value="january" {{ if eq .Month "january" }}selected{{ end }}>January</option>
+                    <option value="february" {{ if eq .Month "february" }}selected{{ end }}>February</option>
+                    <option value="march" {{ if eq .Month "march" }}selected{{ end }}>March</option>
+                    <option value="april" {{ if eq .Month "april" }}selected{{ end }}>April</option>
+                    <option value="may" {{ if eq .Month "may" }}selected{{ end }}>May</option>
+                    <option value="june" {{ if eq .Month "june" }}selected{{ end }}>June</option>
+                    <option value="july" {{ if eq .Month "july" }}selected{{ end }}>July</option>
+                    <option value="august" {{ if eq .Month "august" }}selected{{ end }}>August</option>
+                    <option value="september" {{ if eq .Month "september" }}selected{{ end }}>September</option>
+                    <option value="october" {{ if eq .Month "october" }}selected{{ end }}>October</option>
+                    <option value="november" {{ if eq .Month "november" }}selected{{ end }}>November</option>
+                    <option value="december" {{ if eq .Month "december" }}selected{{ end }}>December</option>
+                </select>
+            </div>
+        </div>
     </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const monthSelect = document.getElementById("month");
-            if (!monthSelect.value) {
-                const currentMonthIndex = new Date().getMonth();
-                const months = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
-                monthSelect.value = months[currentMonthIndex];
-            }
-        });
+    <ul class="space-y-6">
+        {{ range .Logs }}
+        <li class="log-item p-6 glass-effect rounded-2xl hover:bg-gradient-to-r hover:from-indigo-50 hover:to-purple-50 transition-all">
+            <div class="flex items-center gap-2 text-indigo-600 mb-3">
+                <i class="fa-solid fa-terminal text-sm"></i>
+                <span class="font-semibold">Log Entry</span>
+            </div>
+            <pre class="text-sm whitespace-pre-wrap break-words log-text">{{ . }}</pre>
+        </li>
+        {{ else }}
+        <li class="p-8 glass-effect rounded-2xl text-center">
+            <i class="fa-solid fa-inbox text-4xl text-gray-300 mb-3"></i>
+            <p class="text-gray-500">No logs found for this month.</p>
+        </li>
+        {{ end }}
+    </ul>
+</div>
 
-        function changeMonth() {
-            const selectedMonth = document.getElementById("month").value;
-            window.location.href = `/logs/${selectedMonth}`;
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const monthSelect = document.getElementById("month");
+        if (!monthSelect.value) {
+            const currentMonthIndex = new Date().getMonth();
+            const months = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
+            monthSelect.value = months[currentMonthIndex];
         }
-    </script>
+    });
+
+    function changeMonth() {
+        const selectedMonth = document.getElementById("month").value;
+        window.location.href = `/logs/${selectedMonth}`;
+    }
+</script>
 </body>
 
 </html>

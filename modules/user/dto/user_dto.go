@@ -50,10 +50,10 @@ var (
 
 type (
 	UserCreateRequest struct {
-		Name       string                `json:"name" form:"name" binding:"required,min=2,max=100"`
-		TelpNumber string                `json:"telp_number" form:"telp_number" binding:"omitempty,min=8,max=20"`
-		Email      string                `json:"email" form:"email" binding:"required,email"`
-		Password   string                `json:"password" form:"password" binding:"required,min=8"`
+		Name       string                `json:"name" form:"name" validate:"required,min=2,max=100"`
+		TelpNumber string                `json:"telp_number" form:"telp_number" validate:"omitempty,min=8,max=20"`
+		Email      string                `json:"email" form:"email" validate:"required,email"`
+		Password   string                `json:"password" form:"password" validate:"required,min=8"`
 		Image      *multipart.FileHeader `json:"image" form:"image"`
 	}
 
@@ -78,9 +78,9 @@ type (
 	}
 
 	UserUpdateRequest struct {
-		Name       string `json:"name" form:"name" binding:"omitempty,min=2,max=100"`
-		TelpNumber string `json:"telp_number" form:"telp_number" binding:"omitempty,min=8,max=20"`
-		Email      string `json:"email" form:"email" binding:"omitempty,email"`
+		Name       string `json:"name" form:"name" validate:"omitempty,min=2,max=100"`
+		TelpNumber string `json:"telp_number" form:"telp_number" validate:"omitempty,min=8,max=20"`
+		Email      string `json:"email" form:"email" validate:"omitempty,email"`
 	}
 
 	UserUpdateResponse struct {
@@ -93,11 +93,11 @@ type (
 	}
 
 	SendVerificationEmailRequest struct {
-		Email string `json:"email" form:"email" binding:"required"`
+		Email string `json:"email" form:"email" validate:"required"`
 	}
 
 	VerifyEmailRequest struct {
-		Token string `json:"token" form:"token" binding:"required"`
+		Token string `json:"token" form:"token" validate:"required"`
 	}
 
 	VerifyEmailResponse struct {
@@ -106,7 +106,7 @@ type (
 	}
 
 	UserLoginRequest struct {
-		Email    string `json:"email" form:"email" binding:"required"`
-		Password string `json:"password" form:"password" binding:"required"`
+		Email    string `json:"email" form:"email" validate:"required,email"`
+		Password string `json:"password" form:"password" validate:"required,password"`
 	}
 )

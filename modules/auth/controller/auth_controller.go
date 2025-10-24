@@ -1,13 +1,16 @@
 package controller
 
 import (
+	"fmt"
+
+	"github.com/gofiber/fiber/v3"
+	"github.com/ranggakrisnaa/go-fiber-starter/config/logger"
 	"github.com/ranggakrisnaa/go-fiber-starter/modules/auth/dto"
 	"github.com/ranggakrisnaa/go-fiber-starter/modules/auth/service"
 	"github.com/ranggakrisnaa/go-fiber-starter/modules/auth/validation"
 	userDto "github.com/ranggakrisnaa/go-fiber-starter/modules/user/dto"
 	"github.com/ranggakrisnaa/go-fiber-starter/pkg/constants"
 	"github.com/ranggakrisnaa/go-fiber-starter/pkg/utils"
-	"github.com/gofiber/fiber/v3"
 	"github.com/samber/do"
 	"gorm.io/gorm"
 )
@@ -73,16 +76,19 @@ func (c *authController) Login(ctx fiber.Ctx) error {
 
 	// Validate request
 	if err := c.authValidation.ValidateLoginRequest(req); err != nil {
+		logger.LogAuth(fmt.Sprintf("Login validation failed for email %s: %v", req.Email, err))
 		res := utils.BuildResponseFailed("Validation failed", err.Error(), nil)
 		return ctx.Status(fiber.StatusBadRequest).JSON(res)
 	}
 
 	result, err := c.authService.Login(ctx.Context(), req)
 	if err != nil {
+		logger.LogAuth(fmt.Sprintf("Login failed for email %s: %v", req.Email, err))
 		res := utils.BuildResponseFailed(userDto.MESSAGE_FAILED_LOGIN, err.Error(), nil)
 		return ctx.Status(fiber.StatusBadRequest).JSON(res)
 	}
 
+	logger.LogAuth(fmt.Sprintf("Login successful for email %s", req.Email))
 	res := utils.BuildResponseSuccess(userDto.MESSAGE_SUCCESS_LOGIN, result)
 	return ctx.Status(fiber.StatusOK).JSON(res)
 }

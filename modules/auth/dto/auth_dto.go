@@ -24,21 +24,21 @@ var (
 
 type (
 	RefreshTokenRequest struct {
-		RefreshToken string `json:"refresh_token" binding:"required"`
+		RefreshToken string `json:"refresh_token" validate:"required"`
 	}
 
 	TokenResponse struct {
-		AccessToken  string `json:"access_token"`
-		RefreshToken string `json:"refresh_token"`
-		Role         string `json:"role"`
+		AccessToken  string   `json:"access_token"`
+		RefreshToken string   `json:"refresh_token"`
+		Roles        []string `json:"roles"`
 	}
 
 	SendPasswordResetRequest struct {
-		Email string `json:"email" binding:"required,email"`
+		Email string `json:"email" validate:"required,email"`
 	}
 
 	ResetPasswordRequest struct {
-		Token       string `json:"token" binding:"required"`
-		NewPassword string `json:"new_password" binding:"required,min=8"`
+		Token       string `json:"token" validate:"required"`
+		NewPassword string `json:"new_password" validate:"required,min=8"`
 	}
 )

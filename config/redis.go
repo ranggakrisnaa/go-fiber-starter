@@ -2,10 +2,11 @@ package config
 
 import (
 	"context"
+	"os"
 	"time"
 
+	"github.com/joho/godotenv"
 	"github.com/redis/go-redis/v9"
-	"github.com/spf13/viper"
 )
 
 type RedisConfig struct {
@@ -16,11 +17,16 @@ type RedisConfig struct {
 }
 
 func NewRedisConfig() *RedisConfig {
+	err := godotenv.Load(".env")
+	if err != nil {
+		panic("Failed to load .env file: " + err.Error())
+	}
+
 	return &RedisConfig{
-		Host:     viper.GetString("REDIS_HOST"),
-		Port:     viper.GetString("REDIS_PORT"),
-		Password: viper.GetString("REDIS_PASSWORD"),
-		DB:       viper.GetInt("REDIS_DB"),
+		Host:     os.Getenv("REDIS_HOST"),
+		Port:     os.Getenv("REDIS_PORT"),
+		Password: os.Getenv("REDIS_PASSWORD"),
+		DB:       0, // Default DB
 	}
 }
 

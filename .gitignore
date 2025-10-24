@@ -1,5 +1,7 @@
 *.env
 storage/
-assets/
 volumes/
 .idea/
+build/
+bin/
+public/assets

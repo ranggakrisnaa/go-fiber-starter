@@ -1,6 +1,8 @@
 package validation
 
 import (
+	"strings"
+
 	"github.com/go-playground/validator/v10"
 	"github.com/ranggakrisnaa/go-fiber-starter/modules/auth/dto"
 	userDto "github.com/ranggakrisnaa/go-fiber-starter/modules/user/dto"
@@ -61,6 +63,10 @@ func validatePassword(fl validator.FieldLevel) bool {
 
 func validateEmail(fl validator.FieldLevel) bool {
 	email := fl.Field().String()
-	// Basic email validation - you can use regex for more complex validation
-	return len(email) > 0 && len(email) < 255
+	// Check length first
+	if len(email) == 0 || len(email) > 255 {
+		return false
+	}
+	// Basic email format validation - check if email contains @ symbol
+	return strings.Contains(email, "@")
 }

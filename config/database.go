@@ -8,6 +8,7 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	. "github.com/ranggakrisnaa/go-fiber-starter/config/logger"
 )
 
 func RunExtension(db *gorm.DB) {

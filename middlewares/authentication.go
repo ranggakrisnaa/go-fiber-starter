@@ -23,7 +23,7 @@ func Authenticate(jwtService service.JWTService) fiber.Handler {
 			return ctx.Status(fiber.StatusUnauthorized).JSON(response)
 		}
 
-		authHeader = strings.Replace(authHeader, "Bearer ", "", -1)
+		authHeader = strings.ReplaceAll(authHeader, "Bearer ", "")
 		token, err := jwtService.ValidateToken(authHeader)
 		if err != nil {
 			response := utils.BuildResponseFailed(dto.MESSAGE_FAILED_PROSES_REQUEST, dto.MESSAGE_FAILED_TOKEN_NOT_VALID, nil)

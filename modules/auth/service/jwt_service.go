@@ -12,15 +12,16 @@ import (
 )
 
 type JWTService interface {
-	GenerateAccessToken(userId string, role string) string
+	GenerateAccessToken(userId string, roles []string) string
 	GenerateRefreshToken() (string, time.Time)
 	ValidateToken(token string) (*jwt.Token, error)
 	GetUserIDByToken(token string) (string, error)
+	GetRolesByToken(token string) ([]string, error)
 }
 
 type jwtCustomClaim struct {
-	UserID string `json:"user_id"`
-	Role   string `json:"role"`
+	UserID string   `json:"user_id"`
+	Roles  []string `json:"roles"`
 	jwt.RegisteredClaims
 }
 
@@ -48,10 +49,10 @@ func getSecretKey() string {
 	return secretKey
 }
 
-func (j *jwtService) GenerateAccessToken(userId string, role string) string {
+func (j *jwtService) GenerateAccessToken(userId string, roles []string) string {
 	claims := jwtCustomClaim{
 		userId,
-		role,
+		roles,
 		jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(j.accessExpiry)),
 			Issuer:    j.issuer,
@@ -101,4 +102,33 @@ func (j *jwtService) GetUserIDByToken(token string) (string, error) {
 	claims := tToken.Claims.(jwt.MapClaims)
 	id := fmt.Sprintf("%v", claims["user_id"])
 	return id, nil
+}
+
+func (j *jwtService) GetRolesByToken(token string) ([]string, error) {
+	tToken, err := j.ValidateToken(token)
+	if err != nil {
+		return nil, err
+	}
+
+	claims := tToken.Claims.(jwt.MapClaims)
+	rolesInterface, ok := claims["roles"]
+	if !ok {
+		return nil, fmt.Errorf("roles not found in token")
+	}
+
+	rolesSlice, ok := rolesInterface.([]interface{})
+	if !ok {
+		return nil, fmt.Errorf("roles format is invalid")
+	}
+
+	roles := make([]string, len(rolesSlice))
+	for i, role := range rolesSlice {
+		roleStr, ok := role.(string)
+		if !ok {
+			return nil, fmt.Errorf("role at index %d is not a string", i)
+		}
+		roles[i] = roleStr
+	}
+
+	return roles, nil
 }

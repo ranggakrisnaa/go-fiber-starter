@@ -40,7 +40,6 @@ func (s *userService) GetUserById(ctx context.Context, userId string) (dto.UserR
 		Name:       user.Name,
 		Email:      user.Email,
 		TelpNumber: user.TelpNumber,
-		Role:       user.Role,
 		ImageUrl:   user.ImageUrl,
 		IsVerified: user.IsVerified,
 	}, nil
@@ -71,7 +70,6 @@ func (s *userService) Update(ctx context.Context, req dto.UserUpdateRequest, use
 		ID:         updatedUser.ID.String(),
 		Name:       updatedUser.Name,
 		TelpNumber: updatedUser.TelpNumber,
-		Role:       updatedUser.Role,
 		Email:      updatedUser.Email,
 		IsVerified: updatedUser.IsVerified,
 	}, nil

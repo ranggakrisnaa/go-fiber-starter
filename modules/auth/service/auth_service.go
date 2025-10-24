@@ -67,7 +67,6 @@ func (s *authService) Register(ctx context.Context, req userDto.UserCreateReques
 		Email:      req.Email,
 		TelpNumber: req.TelpNumber,
 		Password:   string(hashedPassword),
-		Role:       "user",
 		IsVerified: false,
 	}
 
@@ -81,7 +80,6 @@ func (s *authService) Register(ctx context.Context, req userDto.UserCreateReques
 		Name:       createdUser.Name,
 		Email:      createdUser.Email,
 		TelpNumber: createdUser.TelpNumber,
-		Role:       createdUser.Role,
 		IsVerified: createdUser.IsVerified,
 	}, nil
 }
@@ -97,7 +95,8 @@ func (s *authService) Login(ctx context.Context, req userDto.UserLoginRequest) (
 		return dto.TokenResponse{}, dto.ErrInvalidCredentials
 	}
 
-	accessToken := s.jwtService.GenerateAccessToken(user.ID.String(), user.Role)
+	roles := utils.RoleNames(user.Roles)
+	accessToken := s.jwtService.GenerateAccessToken(user.ID.String(), roles)
 	refreshTokenString, expiresAt := s.jwtService.GenerateRefreshToken()
 
 	refreshToken := entities.RefreshToken{
@@ -115,7 +114,7 @@ func (s *authService) Login(ctx context.Context, req userDto.UserLoginRequest) (
 	return dto.TokenResponse{
 		AccessToken:  accessToken,
 		RefreshToken: refreshTokenString,
-		Role:         user.Role,
+		Roles:        roles,
 	}, nil
 }
 
@@ -125,7 +124,12 @@ func (s *authService) RefreshToken(ctx context.Context, req dto.RefreshTokenRequ
 		return dto.TokenResponse{}, dto.ErrRefreshTokenNotFound
 	}
 
-	accessToken := s.jwtService.GenerateAccessToken(refreshToken.UserID.String(), refreshToken.User.Role)
+	roleNames := make([]string, len(refreshToken.User.Roles))
+	for i, role := range refreshToken.User.Roles {
+		roleNames[i] = role.Name
+	}
+
+	accessToken := s.jwtService.GenerateAccessToken(refreshToken.UserID.String(), roleNames)
 	newRefreshTokenString, expiresAt := s.jwtService.GenerateRefreshToken()
 
 	err = s.refreshTokenRepository.DeleteByToken(ctx, s.db, req.RefreshToken)
@@ -148,7 +152,7 @@ func (s *authService) RefreshToken(ctx context.Context, req dto.RefreshTokenRequ
 	return dto.TokenResponse{
 		AccessToken:  accessToken,
 		RefreshToken: newRefreshTokenString,
-		Role:         refreshToken.User.Role,
+		Roles:        utils.RoleNames(refreshToken.User.Roles),
 	}, nil
 }
 
@@ -166,7 +170,7 @@ func (s *authService) SendVerificationEmail(ctx context.Context, req userDto.Sen
 		return userDto.ErrAccountAlreadyVerified
 	}
 
-	verificationToken := s.jwtService.GenerateAccessToken(user.ID.String(), "verification")
+	verificationToken := s.jwtService.GenerateAccessToken(user.ID.String(), []string{"verification"})
 
 	subject := "Email Verification"
 	body := "Please verify your email using this token: " + verificationToken
@@ -208,7 +212,7 @@ func (s *authService) SendPasswordReset(ctx context.Context, req dto.SendPasswor
 		return userDto.ErrEmailNotFound
 	}
 
-	resetToken := s.jwtService.GenerateAccessToken(user.ID.String(), "password_reset")
+	resetToken := s.jwtService.GenerateAccessToken(user.ID.String(), []string{"password_reset"})
 
 	subject := "Password Reset"
 	body := "Please reset your password using this token: " + resetToken
